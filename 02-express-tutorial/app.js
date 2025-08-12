@@ -1,15 +1,31 @@
-const { products } = require("./data");
+// immport express module, creation of the app
+const express = require("express");
+const app = express();
+
+const { products, people } = require("./data");
+
+// middleware function
+const logger = (req, res, next) => {
+  const method = req.method;
+  const url = req.url;
+  const time = new Date().getFullYear();
+  console.log(method, url, time);
+  next();
+};
+
+app.use(logger);
 
 console.log("Express Tutorial");
 
-// immport express module
-const express = require("express");
-
-// creation of the app
-const app = express();
+// middleware
+app.use(express.urlencoded({ extended: false }));
+app.use(express.json());
 
 // statements for middleware
 app.use(express.static("./public"));
+
+const peopleRouter = require("./routes/people");
+app.use("/api/v1/people", peopleRouter);
 
 //app.get
 app.get("/api/v1/test", (req, res) => {
@@ -69,3 +85,22 @@ app.get("/api/v1/lowToHigh", (req, res) => {
 app.listen(3000, () => {
   console.log("server is running on localhost:3000");
 });
+
+// // get people data
+// app.get("/api/v1/people", (req, res) => {
+//   res.json({ people });
+// });
+
+// // post people data
+// app.post("/api/v1/people", (req, res) => {
+//   const { name } = req.body;
+
+//   if (!name) {
+//     return res
+//       .status(400)
+//       .json({ success: false, msg: "Please provide a name" });
+//   }
+
+//   people.push({ id: people.length + 1, name: req.body.name });
+//   res.status(201).json({ success: true, name: req.body.name });
+// });
