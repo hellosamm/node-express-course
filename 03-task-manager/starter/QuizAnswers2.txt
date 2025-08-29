@@ -1,0 +1,11 @@
+1. creating the asyncWrapper created cleaner code, where we didn't have to repeate the try, catch for every route
+
+const getTask = asyncWrapper(async (req, res, next) => {  
+  const { id: taskID } = req.params;  
+  const task = await Task.findOne({ _id: taskID });  
+  if (!task) {  
+    // your code here  
+    return next(CustomAIPError("no taks with matching ID", 404))
+  }  
+  res.status(200).json({ task });  
+});  
